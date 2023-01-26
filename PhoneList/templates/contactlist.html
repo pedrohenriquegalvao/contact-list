@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-bt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de contatos</title>
+</head>
+<body>
+    <h1>Lista de contatos</h1>
+    <label for="name">Enter the contact name</label>
+    <input type="text" name="name" id="name">
+    <label for="phone">Enter the phone</label>
+    <input type="text" name="phone" id="phone">
+    <button onclick="postContact()">Submit</button>
+    <h2>Contatos</h2>
+    <div id="contacts"></div>
+    <script>
+        var url = "http://127.0.0.1:5001/contacts"
+        var editMode = false
+
+        window.onload = getContacts()
+        
+
+        // Função para remover os NODES de edição, caso eles existam, do DOM.
+        function removeEditFields() { 
+            editMode = false // Desative o modo edição
+            if(document.getElementById('updateName') && document.getElementById('updatePhone') 
+                && document.getElementById('confirmEditButton')) {
+                    document.body.removeChild(document.getElementById('updateName'))
+                    document.body.removeChild(document.getElementById('updatePhone'))
+                    document.body.removeChild(document.getElementById('confirmEditButton'))
+                }
+           
+        }
+
+        // Requisição GET para recuperar todos os contatos
+        function getContacts(){
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(json => {
+                console.log(json)
+                document.getElementById('contacts').innerHTML = ""
+                json.contacts.forEach(contact => {
+                    document.getElementById('contacts').innerHTML += `<p>Nome: ${contact['name']}  Phone: ${contact['phone']}  <button onclick='showUpdateFields(${contact['id']})'>Edit </button><button onclick='deleteContact(${contact['id']})'>Delete </button></p>`
+                });
+                
+            })
+            .catch(error => console.error(error))
+            removeEditFields()
+        }
+
+        // Requisição POST para adicionar um contato na lista no servidor
+        function postContact(){
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            
+            const data = {"name":name,"phone":phone}
+
+            
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(json => {
+                console.log("Contato adicionado: ", json)
+                getContacts()
+            })
+            .catch(error => console.error(error));
+        }
+
+        // Função chamada ao clicar no botão para editar um contato, cria e exibe os campos para editar o contato.
+        function showUpdateFields(id){
+            if(!editMode) { // Se ele não estiver em modo de edição
+                editMode = true // Ative o modo edição
+                let inputName = document.createElement('input')
+                inputName.type = "text";
+                inputName.setAttribute('name', 'updateName')
+                inputName.setAttribute('id', 'updateName')
+                document.body.appendChild(inputName)
+
+                let inputPhone = document.createElement('input')
+                inputPhone.type = "text";
+                inputPhone.setAttribute('name', 'updatePhone')
+                inputPhone.setAttribute('id', 'updatePhone')
+                document.body.appendChild(inputPhone)
+
+                let confirmEditButton = document.createElement("button") 
+
+                let name = document.getElementById('updateName')
+                let phone = document.getElementById('updatePhone')
+
+                confirmEditButton.setAttribute("id", "confirmEditButton")
+                confirmEditButton.innerText = "Confirmar"
+                document.body.appendChild(confirmEditButton)
+                document.getElementById("confirmEditButton").addEventListener('click', () => {
+                    updateContact(id,name.value,phone.value)
+                }); 
+            }
+        }
+
+        // Função chamada após clicar no botão "Confirmar" ao editar um contato.
+        // Requisição PUT para atualizar o contato em questão (que está salvo na lista no servidor) com os campos alterados pelo usuário
+        function updateContact(id, name, phone) {
+            let urlUpdate = url + `/${parseInt(id)}`
+            const data = {"name":name, "phone":phone}
+            fetch(urlUpdate, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(json => {
+                console.log("Contado editado: ", json)
+                getContacts()
+            })
+            .catch(error => console.error(error));
+
+        }
+
+        // Requisição DELETE para remover o contato da lista de contatos presente no servidor.
+        function deleteContact(id){
+            let urlDelete = url + `/${parseInt(id)}`
+            fetch(urlDelete, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(json => {
+                console.log(json)
+                getContacts()
+            })
+            .catch(error => console.error(error));
+        }
+
+        
+    </script>   
+</body>
+
+</html>

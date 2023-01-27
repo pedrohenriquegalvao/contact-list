@@ -1,0 +1,133 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: Inter;
+}
+
+body h1 {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 5px;
+  color: rgb(51, 45, 169);
+  margin-top: 2.2em;
+}
+body .sub-title {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  margin-bottom: 3em;
+}
+body #formAdd {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 400px;
+}
+body #formAdd input {
+  margin-bottom: 1.5em;
+  background-color: #d2d2d2;
+  border: none;
+  padding: 10px;
+  font-size: 0.9em;
+}
+body #formAdd label {
+  margin-bottom: 5px;
+}
+body #formAdd .form-submit {
+  margin-bottom: 2em;
+  padding: 10px;
+  border: none;
+  background-color: rgb(51, 45, 169);
+  color: #fff;
+  cursor: pointer;
+  transition: 0.5s;
+  font-size: 1.1em;
+}
+body #formAdd .form-submit:hover {
+  background-color: rgb(31, 27, 104);
+}
+body h2 {
+  text-align: center;
+  margin-bottom: 1em;
+}
+body #contacts {
+  text-align: left;
+  text-transform: capitalize;
+  letter-spacing: normal;
+  text-align: center;
+}
+body #contacts button {
+  padding: 5px 10px;
+  margin-right: 5px;
+  border: none;
+  background-color: rgb(51, 45, 169);
+  color: #fff;
+  cursor: pointer;
+  transition: 0.5s;
+  font-size: 0.8em;
+  margin-bottom: 1em;
+}
+body #contacts button:hover {
+  background-color: rgb(31, 27, 104);
+}
+body .container {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  max-width: 400px;
+}
+body #popEdit {
+  z-index: 99999;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+body #popEdit #containerPop {
+  background-color: #fff;
+  margin: auto;
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 5em;
+}
+body #popEdit #containerPop #formEdit {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+}
+body #popEdit #containerPop #formEdit #title {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 1em;
+  font-weight: 700;
+  color: rgb(51, 45, 169);
+}
+body #popEdit #containerPop #formEdit input {
+  margin-bottom: 1.5em;
+  background-color: #d2d2d2;
+  border: none;
+  padding: 10px;
+  font-size: 0.9em;
+}
+body #popEdit #containerPop #formEdit #confirmEditButton {
+  padding: 10px;
+  border: none;
+  background-color: rgb(51, 45, 169);
+  color: #fff;
+  cursor: pointer;
+  transition: 0.5s;
+  font-size: 1em;
+}
+body #popEdit #containerPop #formEdit #confirmEditButton:hover {
+  background-color: rgb(31, 27, 104);
+}/*# sourceMappingURL=main.css.map */

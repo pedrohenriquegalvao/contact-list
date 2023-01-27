@@ -1,0 +1,154 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: Inter;
+}
+
+body{
+    h1{
+        text-align: center;
+        font-size: 2em;
+        margin-bottom: 5px;
+        color: rgb(51, 45, 169);
+        margin-top: 2.2em;
+    }
+
+    .sub-title{
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: .09em;
+        margin-bottom: 3em;
+    }
+
+    #formAdd{
+        display: flex;
+        flex-direction: column;
+        margin: 0 auto;
+        width: 400px;
+
+        input{
+            margin-bottom: 1.5em;
+            background-color: #d2d2d2;
+            border: none;
+            padding: 10px;
+            font-size: .9em;
+        }
+
+        label{
+            margin-bottom: 5px;
+        }
+
+        .form-submit{
+            margin-bottom: 2em;
+            padding: 10px;
+            border: none;
+            background-color: rgb(51, 45, 169);
+            color: #fff;
+            cursor: pointer;
+            transition: .5s;
+            font-size: 1.1em;
+
+            &:hover{
+                background-color:  rgb(31, 27, 104);
+            }
+        }
+    }
+
+    h2{
+        text-align: center;
+        margin-bottom: 1em;
+    }
+
+    #contacts{
+        text-align: left;
+        text-transform: capitalize;
+        letter-spacing: normal;
+        text-align: center;
+
+        button{
+            padding: 5px 10px;
+            margin-right: 5px;
+            border: none;
+            background-color: rgb(51, 45, 169);
+            color: #fff;
+            cursor: pointer;
+            transition: .5s;
+            font-size: .8em;
+            margin-bottom: 1em;
+
+            &:hover{
+                background-color:  rgb(31, 27, 104);
+            }
+        }
+    }
+
+    .container{
+        display: flex;
+        flex-direction: column;
+        margin: 0 auto;
+        max-width: 400px;
+    }
+
+    #popEdit{
+        z-index: 99999;
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba($color: black, $alpha: 0.5);
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        #containerPop{
+            background-color: #fff;
+            margin: auto;
+            width: 100%;
+            max-width: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 5em;
+
+            #formEdit{
+                display: flex;
+                flex-direction: column;
+                padding: 1em;
+
+                #title{
+                    text-align: center;
+                    font-size: 2em;
+                    margin-bottom: 1em;
+                    font-weight: 700;
+                    color: rgb(51, 45, 169);
+                }
+
+                input{
+                    margin-bottom: 1.5em;
+                    background-color: #d2d2d2;
+                    border: none;
+                    padding: 10px;
+                    font-size: .9em;
+                }
+
+                #confirmEditButton{
+                    padding: 10px;
+                    border: none;
+                    background-color: rgb(51, 45, 169);
+                    color: #fff;
+                    cursor: pointer;
+                    transition: .5s;
+                    font-size: 1em;
+        
+                    &:hover{
+                        background-color:  rgb(31, 27, 104);
+                    }
+                }
+            }
+        }
+    }
+
+}

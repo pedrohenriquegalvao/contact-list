@@ -7,31 +7,34 @@
     <title>Lista de contatos</title>
 </head>
 <body>
+
     <h1>Lista de contatos</h1>
-    <label for="name">Enter the contact name</label>
-    <input type="text" name="name" id="name">
-    <label for="phone">Enter the phone</label>
-    <input type="text" name="phone" id="phone">
-    <button onclick="postContact()">Submit</button>
+    <form id="formAdd">
+        <label for="name">Enter the contact name</label>
+        <input type="text" name="name" id="name">
+
+        <label for="phone">Enter the phone</label>
+        <input type="text" name="phone" id="phone">
+
+        <button>Submit</button>
+    </form>
+    
     <h2>Contatos</h2>
     <div id="contacts"></div>
-    <script>
+
+    <script src="../static/index.js"></script>
+    <!-- <script>
         var url = "http://127.0.0.1:5001/contacts"
         var editMode = false
 
         window.onload = getContacts()
         
 
-        // Função para remover os NODES de edição, caso eles existam, do DOM.
+        // Função para remover o form de edição, caso ele exista, do dom.
         function removeEditFields() { 
             editMode = false // Desative o modo edição
-            if(document.getElementById('updateName') && document.getElementById('updatePhone') 
-                && document.getElementById('confirmEditButton')) {
-                    document.body.removeChild(document.getElementById('updateName'))
-                    document.body.removeChild(document.getElementById('updatePhone'))
-                    document.body.removeChild(document.getElementById('confirmEditButton'))
-                }
-           
+            let formEdit = document.getElementById('formEdit')
+            formEdit ? document.body.removeChild(formEdit) : null
         }
 
         // Requisição GET para recuperar todos os contatos
@@ -44,11 +47,15 @@
             })
             .then(response => response.json())
             .then(json => {
-                console.log(json)
+                console.log("json", json)
                 document.getElementById('contacts').innerHTML = ""
-                json.contacts.forEach(contact => {
-                    document.getElementById('contacts').innerHTML += `<p>Nome: ${contact['name']}  Phone: ${contact['phone']}  <button onclick='showUpdateFields(${contact['id']})'>Edit </button><button onclick='deleteContact(${contact['id']})'>Delete </button></p>`
-                });
+                if (json.contacts) {
+                    json.contacts.forEach(contact => {
+                        document.getElementById('contacts').innerHTML += `<p>Nome: ${contact['name']}  Phone: ${contact['phone']}  <button onclick='showUpdateFields(${contact['id']})'>Edit </button><button onclick='deleteContact(${contact['id']})'>Delete </button></p>`
+                    });
+                } else {
+                    document.getElementById('contacts').innerHTML = "Não há nenhum contato na lista!"
+                }
                 
             })
             .catch(error => console.error(error))
@@ -57,12 +64,11 @@
 
         // Requisição POST para adicionar um contato na lista no servidor
         function postContact(){
-            const name = document.getElementById('name').value;
-            const phone = document.getElementById('phone').value;
+            const name = document.getElementById('name');
+            const phone = document.getElementById('phone');
             
-            const data = {"name":name,"phone":phone}
+            const data = {"name":name.value,"phone":phone.value}
 
-            
             fetch(url, {
                 method: "POST",
                 headers: {
@@ -76,35 +82,38 @@
                 getContacts()
             })
             .catch(error => console.error(error));
+            name.value = ""
+            phone.value = ""
         }
 
         // Função chamada ao clicar no botão para editar um contato, cria e exibe os campos para editar o contato.
         function showUpdateFields(id){
             if(!editMode) { // Se ele não estiver em modo de edição
                 editMode = true // Ative o modo edição
+                
                 let inputName = document.createElement('input')
                 inputName.type = "text";
                 inputName.setAttribute('name', 'updateName')
                 inputName.setAttribute('id', 'updateName')
-                document.body.appendChild(inputName)
-
+                
                 let inputPhone = document.createElement('input')
                 inputPhone.type = "text";
                 inputPhone.setAttribute('name', 'updatePhone')
                 inputPhone.setAttribute('id', 'updatePhone')
-                document.body.appendChild(inputPhone)
 
                 let confirmEditButton = document.createElement("button") 
-
-                let name = document.getElementById('updateName')
-                let phone = document.getElementById('updatePhone')
-
                 confirmEditButton.setAttribute("id", "confirmEditButton")
                 confirmEditButton.innerText = "Confirmar"
-                document.body.appendChild(confirmEditButton)
-                document.getElementById("confirmEditButton").addEventListener('click', () => {
-                    updateContact(id,name.value,phone.value)
-                }); 
+
+                let formEdit = document.createElement('form')
+                formEdit.setAttribute('id', 'formEdit')
+                formEdit.append(inputName, inputPhone, confirmEditButton)
+                formEdit.onsubmit = (e) => {
+                    e.preventDefault();
+                    updateContact(id,inputName.value,inputPhone.value);
+                }
+                
+                document.body.appendChild(formEdit); 
             }
         }
 
@@ -147,7 +156,7 @@
         }
 
         
-    </script>   
+    </script>    -->
 </body>
 
 </html>

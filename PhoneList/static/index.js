@@ -47,6 +47,11 @@ function postContact(){
 
     const data = {"name":name.value,"phone":phone.value}
 
+    // Usando o framework axios
+    // axios.post(url,{'name':name.value,"phone":phone.value})
+    // .then(response => {
+    //     console.log(response)
+    // })
     fetch(url, {
         method: "POST",
         headers: {

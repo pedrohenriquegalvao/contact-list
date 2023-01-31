@@ -1,5 +1,19 @@
 from flask import Flask, jsonify, request, render_template, Response
+import sqlite3
+
 app = Flask(__name__)
+
+def get_db_connection():
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@app.route('/')
+def index():
+    conn = get_db_connection()
+    contatos = conn.execute('SELECT * FROM contacts').fetchall()
+    conn.close()
+    return render_template('index.html', contatos=contatos)
 
 contacts = []
 

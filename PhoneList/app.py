@@ -1,83 +1,69 @@
 from flask import Flask, jsonify, request, render_template, Response
-import sqlite3
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///contacts.sqlite3'
 
-def get_db_connection():
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row
-    return conn
+db = SQLAlchemy(app)
 
-@app.route('/')
-def index():
-    conn = get_db_connection()
-    contatos = conn.execute('SELECT * FROM contacts').fetchall()
-    conn.close()
-    return render_template('index.html', contatos=contatos)
+class Contact(db.Model):
+    id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column('name', db.String(70))
+    phone = db.Column('phone', db.String(14))
 
-contacts = []
+    def __init__(self, name, phone):
+       self.name = name
+       self.phone = phone
+
+    def as_dict(self):
+        return {c.name: getattr(self,c.name) for c in self.__table__.columns}
+
 
 @app.route('/contactlist',methods=['GET'])
 def contactlist():
     return render_template('contactlist.html')
 
-# GET request to retrieve all contacts
+
 @app.route('/contacts', methods=['GET'])
 def get_contacts():
-    if not contacts:
+    contatos = Contact.query.all() #db.session.execute(db.select(Contact)).scalars()
+    if not contatos:
         return jsonify({'message:':'No contacts found in the server'}), 404
-    return jsonify({'contacts': contacts}), 200
+    return jsonify({'contacts':[c.as_dict() for c in contatos]}), 200
 
-# GET request to retrieve one contacts
-@app.route('/contacts/<int:id>', methods=['get'])
-def get_contact(id):
-    for contact in contacts:
-        if contact['id'] == id:
-            return jsonify({'contact': contact}), 200
-    return jsonify({'message:':'Contact not found'}), 404
+with app.app_context():
+    db.create_all()
 
 # POST request to add a new contact with data of the new contact on a json file
 @app.route('/contacts', methods=['POST'])
 def add_contact():
-    if not request.is_json: 
-        return jsonify({'message':'body is not a json'}), 415
     data = request.get_json()
     if not data or not all(key in data for key in ('name', 'phone')):
-        return jsonify({'message','bad request'}), 400
-    id = 1
-    if len(contacts) > 0:
-        id = contacts[-1]["id"] + 1
-    contact = {
-        'id': id,
-        'name': data['name'],
-        'phone': data['phone']
-    }
-    contacts.append(contact)
-    return jsonify({'contact': contact}), 201
+        return jsonify({'message': 'Bad request'}), 400
+    contact = Contact(name=data['name'], phone=data['phone'])
+    db.session.add(contact)
+    db.session.commit()
+    return jsonify({'contact': contact.as_dict()}), 201
 
 # PUT request to update a contact
 @app.route('/contacts/<int:id>', methods=['PUT'])
 def update_contact(id):
-    if not request.is_json: 
-        return jsonify({'message':'body is not a json'}), 415
     data = request.get_json()
     if not data or not all(key in data for key in ('name', 'phone')):
-        return jsonify({'message','bad request'}), 400
-    for contact in contacts:
-        if id == contact['id']:
-            contact['name'] = data['name']
-            contact['phone'] = data['phone']
-            return jsonify({'contact': contact}), 200
-    return jsonify({'message':'Contact not found'}), 404
+        return jsonify({'message': 'Bad request'}), 400
+    contact = Contact.query.get_or_404(id)
+    contact.name = data['name']
+    contact.phone = data['phone']
+    db.session.commit()
+    return jsonify({'contact': contact.as_dict()}), 200
 
 # DELETE request to delete a contact
 @app.route('/contacts/<int:id>', methods=['DELETE'])
 def delete_contact(id):
-    for i,contact in enumerate(contacts):
-        if id == contact['id']:
-            del contacts[i]
-            return jsonify({'message':'Contact deleted'}), 200
-    return {'message': ''}
+    contact = Contact.query.get_or_404(id)
+    db.session.delete(contact)
+    db.session.commit()
+    return jsonify({'message': 'Contact has been deleted.'}), 200
 
 
 app.run(debug=True,port = 5001)
